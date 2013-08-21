@@ -3,7 +3,7 @@
 import sys
 arch = sys.platform
 
-Import('env', 'has_dtrace', 'parallel_libs', 'exr_libs', 'tiff_libs')
+Import('env', 'has_dtrace', 'parallel_libs', 'exr_libs', 'tiff_libs', 'vdb_libs' )
 
 if has_dtrace == True:
     env.DTrace('core/dtrace.h', 'core/dtrace.d')
@@ -92,7 +92,7 @@ output['pbrt_lib'] = env.StaticLibrary('libpbrt', lib_src)
 
 env_libs = [ ]
 output['pbrt'] = env.Program('pbrt', renderer_src + output['pbrt_lib'],
-                             LIBS = env_libs + exr_libs + parallel_libs)
+                             LIBS = env_libs + exr_libs + parallel_libs + vdb_libs )
 if arch == 'win32':
     env.AddPostAction(output['pbrt'], 
                       'mt.exe /outputresource:"$TARGET;#1" /manifest "${TARGET}.manifest" /nologo')
