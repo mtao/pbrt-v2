@@ -29,7 +29,7 @@ tiff_includes = [ ]
 tiff_libdir = [ ]
 Export('tiff_libs')
 
-has_openvdb = False 
+has_openvdb = True
 vdb_includes = [ '/usr/local/include' ]
 vdb_libdir = [ '/usr/local/lib' ]
 
@@ -92,7 +92,7 @@ if has_openvdb:
     env.Append(CPPPATH = vdb_includes)
     env.Append(LIBPATH = vdb_includes)
     env.Append(CPPDEFINES = [ 'PBRT_HAS_OPENVDB' ])
-    vdb_libs = [ 'tbb', 'jemalloc' ] #also includes Half but exr already includes it
+    vdb_libs = [ 'openvdb', 'tbb', 'jemalloc' ] #also includes Half but exr already includes it
 else:
     vdb_libs = []
 Export('vdb_libs')

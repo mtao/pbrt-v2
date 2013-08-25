@@ -36,9 +36,15 @@
 #include "probes.h"
 #include "parser.h"
 #include "parallel.h"
+#ifdef PBRT_HAS_OPENVDB
+#include <openvdb/openvdb.h>
+#endif
 
 // main program
 int main(int argc, char *argv[]) {
+#ifdef PBRT_HAS_OPENVDB
+    openvdb::initialize();
+#endif
     Options options;
     vector<string> filenames;
     // Process command-line arguments

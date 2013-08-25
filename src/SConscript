@@ -73,6 +73,10 @@ shapes_src = [ 'shapes/cone.cpp',        'shapes/cylinder.cpp',
                'shapes/hyperboloid.cpp', 'shapes/loopsubdiv.cpp',
                'shapes/nurbs.cpp',       'shapes/paraboloid.cpp',
                'shapes/sphere.cpp',      'shapes/trianglemesh.cpp' ]
+
+if vdb_libs:
+    shapes_src.append('shapes/vdblevelset.cpp')
+
 textures_src = [ 'textures/bilerp.cpp',          'textures/checkerboard.cpp',
                  'textures/constant.cpp',        'textures/dots.cpp',
                  'textures/fbm.cpp',             'textures/imagemap.cpp', 
@@ -106,7 +110,7 @@ if len(exr_libs) > 0:
                                    LIBS = env_libs + exr_libs)
     output['bsdftest'] = env.Program('bsdftest', [ 'tools/bsdftest.cpp' ] + 
                                      output['pbrt_lib'], 
-                                     LIBS = env_libs + exr_libs + parallel_libs)
+                                     LIBS = env_libs + exr_libs + parallel_libs + vdb_libs)
     output['defaults'] = output['defaults'] +  \
         [ output['exrdiff'], output['exravg'], output['bsdftest'] ]
 
