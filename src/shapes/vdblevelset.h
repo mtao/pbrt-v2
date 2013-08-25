@@ -39,6 +39,7 @@
 // shapes/vdblevelset.h*
 #include "shape.h"
 #include <openvdb/openvdb.h>
+#include <openvdb/tools/LevelSetRayIntersector.h>
 
 // VDBLevelset Declarations
 class VDBLevelset : public Shape {
@@ -53,6 +54,8 @@ public:
 private:
     // VDBLevelset Private Data
     openvdb::FloatGrid::Ptr gridPtr;
+    openvdb::tools::LevelSetRayIntersector<openvdb::FloatGrid>* lsri;
+
 };
 
 
