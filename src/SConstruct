@@ -1,6 +1,7 @@
 # -*- mode: python -*-
 
 import sys, platform
+from SCons.Errors import BuildError
 arch = sys.platform
 
 ######################################################################
@@ -27,6 +28,11 @@ tiff_libs = [ ]
 tiff_includes = [ ]
 tiff_libdir = [ ]
 Export('tiff_libs')
+
+has_openvdb = True
+vdb_includes = [ '/usr/local/include' ]
+vdb_libdir = [ '/usr/local/lib' ]
+
 
 ######################################################################
 ## Configure generic environment
@@ -65,7 +71,7 @@ if has_openexr:
     env.Append(LIBPATH = exr_libdir)
     env.Append(CPPDEFINES = [ 'PBRT_HAS_OPENEXR' ])
     if arch != 'darwin':
-        exr_libs = [ 'Iex', 'IlmImf', 'Imath', 'Iex', 'IlmThread', 'Half' ] 
+        exr_libs = [ 'Iex', 'IlmImf', 'Imath', 'Iex', 'IlmThread', 'Half', 'pthread' ] 
     else:
         exr_libs = [ 'Iex', 'IlmImf', 'Imath', 'Iex', 'IlmThread', 'Half', 'z' ] 
 else:
@@ -78,6 +84,19 @@ if has_dtrace:
 
 if has_gcd:
     env.Append(CPPDEFINES = [ 'PBRT_USE_GRAND_CENTRAL_DISPATCH' ])
+
+if has_openvdb:
+    if not has_openexr:
+        print "Cannot build with openvdb without openexr"
+        raise BuildError(errstr="Cannot build with openvdb without openexr")
+    env.Append(CPPPATH = vdb_includes)
+    env.Append(LIBPATH = vdb_includes)
+    env.Append(CPPDEFINES = [ 'PBRT_HAS_OPENVDB' ])
+    vdb_libs = [ 'openvdb', 'tbb', 'jemalloc' ] #also includes Half but exr already includes it
+else:
+    vdb_libs = []
+Export('vdb_libs')
+
 
 ######################################################################
 
