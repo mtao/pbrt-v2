@@ -74,17 +74,18 @@ bool VDBLevelset::Intersect(const Ray &r, float *tHit, float *rayEpsilon,
                          DifferentialGeometry *dg) const {
     Ray ray;
     (*WorldToObject)(r,&ray);
-    openvdb::tools::LinearIntersector<openvdb::FloatGrid> tester(*gridPtr);
 
     typedef openvdb::math::Ray<double> VDBRay;
     typedef VDBRay::Vec3Type VDBVec3;
 
-    const VDBVec3 dir(ray.d[0],ray.d[1],ray.d[2]);
+    VDBVec3 dir(ray.d[0],ray.d[1],ray.d[2]);
+    dir.normalize();
     const VDBVec3 eye(ray.o[0],ray.o[1],ray.o[2]);
     VDBVec3 w,n;
     VDBRay vdb_ray(eye,dir,ray.mint,ray.maxt);
-    if(lsri->intersectsWS(vdb_ray,tester,w,n)) {
-        *tHit = tester.time();
+    double time;
+    if(lsri->intersectsWS(vdb_ray,w,n,time)) {
+        *tHit = time;
         *rayEpsilon = 5e-5 * (*tHit);//TODO: Set this to a better value?
         n.normalize();
         const Normal pbrt_n(n.x(),n.y(),n.z());
@@ -108,15 +109,15 @@ bool VDBLevelset::Intersect(const Ray &r, float *tHit, float *rayEpsilon,
 bool VDBLevelset::IntersectP(const Ray &r) const {
     Ray ray;
     (*WorldToObject)(r,&ray);
-    openvdb::tools::LinearIntersector<openvdb::FloatGrid> tester(*gridPtr);
 
     typedef openvdb::math::Ray<double> VDBRay;
     typedef VDBRay::Vec3Type VDBVec3;
 
-    const VDBVec3 dir(ray.d[0],ray.d[1],ray.d[2]);
+    VDBVec3 dir(ray.d[0],ray.d[1],ray.d[2]);
+    dir.normalize();
     const VDBVec3 eye(ray.o[0],ray.o[1],ray.o[2]);
     VDBRay vdb_ray(eye,dir,ray.mint,ray.maxt);
-    return lsri->intersectsWS(vdb_ray,tester);
+    return lsri->intersectsWS(vdb_ray);
 }
 
 

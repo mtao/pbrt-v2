@@ -39,7 +39,7 @@
 // shapes/vdblevelset.h*
 #include "shape.h"
 #include <openvdb/openvdb.h>
-#include <openvdb/tools/LevelSetRayIntersector.h>
+#include <openvdb/tools/RayIntersector.h>
 
 // VDBLevelset Declarations
 class VDBLevelset : public Shape {
