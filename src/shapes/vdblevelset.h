@@ -55,6 +55,7 @@ private:
     // VDBLevelset Private Data
     openvdb::FloatGrid::Ptr gridPtr;
     openvdb::tools::LevelSetRayIntersector<openvdb::FloatGrid>* lsri;
+    BBox bbox;
 
 };
 

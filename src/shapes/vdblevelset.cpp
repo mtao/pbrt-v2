@@ -54,6 +54,10 @@ VDBLevelset::VDBLevelset(const Transform *o2w, const Transform *w2o,
        }
     }
     lsri = new openvdb::tools::LevelSetRayIntersector<openvdb::FloatGrid>(*gridPtr);
+    openvdb::CoordBBox bbox = gridPtr->evalActiveVoxelBoundingBox();
+    openvdb::Vec3d min = gridPtr->indexToWorld(bbox.min());
+    openvdb::Vec3d max = gridPtr->indexToWorld(bbox.max());
+    this->bbox =  BBox(Point(min[0],min[1],min[2]), Point(max[0],max[1],max[2]));
 }
 
 
@@ -63,15 +67,13 @@ VDBLevelset::~VDBLevelset() {
 
 
 BBox VDBLevelset::ObjectBound() const {
-    openvdb::CoordBBox bbox = gridPtr->evalActiveVoxelBoundingBox();
-    openvdb::Vec3d min = gridPtr->indexToWorld(bbox.min());
-    openvdb::Vec3d max = gridPtr->indexToWorld(bbox.max());
-    return BBox(Point(min[0],min[1],min[2]), Point(max[0],max[1],max[2]));
+    return bbox;
 }
 
 
 bool VDBLevelset::Intersect(const Ray &r, float *tHit, float *rayEpsilon,
                          DifferentialGeometry *dg) const {
+
     Ray ray;
     (*WorldToObject)(r,&ray);
 
@@ -82,9 +84,12 @@ bool VDBLevelset::Intersect(const Ray &r, float *tHit, float *rayEpsilon,
     dir.normalize();
     const VDBVec3 eye(ray.o[0],ray.o[1],ray.o[2]);
     VDBVec3 w,n;
-    VDBRay vdb_ray(eye,dir,ray.mint,ray.maxt);
-    double time;
-    if(lsri->intersectsWS(vdb_ray,w,n,time)) {
+    VDBRay vdb_ray(eye,dir);
+    double time = ray.mint;
+    bool isect = false;
+    isect = lsri->intersectsWS(vdb_ray,w,n,time);
+    if(isect) {
+        std::cout << "Hit! " << time << std::endl;
         *tHit = time;
         *rayEpsilon = 5e-5 * (*tHit);//TODO: Set this to a better value?
         n.normalize();

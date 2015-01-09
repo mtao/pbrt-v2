@@ -81,7 +81,7 @@ textures_src = [ 'textures/bilerp.cpp',          'textures/checkerboard.cpp',
                  'textures/constant.cpp',        'textures/dots.cpp',
                  'textures/fbm.cpp',             'textures/imagemap.cpp', 
                  'textures/marble.cpp',          'textures/mix.cpp',
-                 'textures/scale.cpp',           'textures/uv.cpp',
+                 'textures/scale.cpp',           'textures/uv.cpp',             'textures/grid3d.cpp',
                  'textures/windy.cpp',           'textures/wrinkled.cpp' ]
 volumes_src = [ 'volumes/exponential.cpp',       'volumes/homogeneous.cpp', 
                 'volumes/volumegrid.cpp' ]

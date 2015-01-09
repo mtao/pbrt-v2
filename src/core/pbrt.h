@@ -224,6 +224,10 @@ class VolumeIntegrator;
 inline float Lerp(float t, float v1, float v2) {
     return (1.f - t) * v1 + t * v2;
 }
+template <typename T>
+inline T LerpT(float t, T v1, T v2) {
+    return (1.f - t) * v1 + t * v2;
+}
 
 
 inline float Clamp(float val, float low, float high) {
