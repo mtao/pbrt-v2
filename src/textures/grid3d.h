@@ -78,6 +78,7 @@ public:
     }
 
     T Evaluate(const DifferentialGeometry &dg) const {
+        return 0.1f;
         Vector dpdx, dpdy;
         Point p = mapping->Map(dg, &dpdx, &dpdy);
     float dx,dy,dz;

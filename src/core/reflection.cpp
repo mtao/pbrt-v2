@@ -37,6 +37,7 @@
 #include "sampler.h"
 #include "montecarlo.h"
 #include <stdarg.h>
+#include <cmath>
 
 // BxDF Local Definitions
 struct IrregIsoProc {
@@ -244,6 +245,34 @@ Spectrum FresnelBlend::f(const Vector &wo, const Vector &wi) const {
 }
 
 
+WetBxDF::WetBxDF(BxDF* base,const float& wetness )
+    : BxDF(BxDFType(BSDF_REFLECTION | BSDF_GLOSSY)), wetness(wetness), base(base) {
+}
+
+float _wetness_attenuation(float density) {
+    return std::exp(-4.f*density);
+}
+
+Spectrum WetBxDF::f(const Vector &wo, const Vector &wi) const {
+    //TODO: attenuate by fresnel stuffs
+    //Convert wo,wi to internal angles and compute f on those
+    //multiply by trasnference ratios
+    //return base->f(wo,wi);
+    return _wetness_attenuation(wetness) * base->f(wo,wi);
+}
+
+Spectrum WetBxDF::Sample_f(const Vector &wo, Vector *wi,
+                              float u1, float u2, float *pdf) const {
+    Spectrum f = base->Sample_f(wo, wi, u1, u2, pdf);//TODO: change angles to fit change of brdf
+    return _wetness_attenuation(wetness)  * f;
+}
+
+float WetBxDF::Pdf(const Vector &wo, const Vector &wi) const {
+    //TODO: figure out how much of the region where light appears this is 
+    return base->Pdf(wo,wi);
+}
+
+
 Point BRDFRemap(const Vector &wo, const Vector &wi) {
     float cosi = CosTheta(wi), coso = CosTheta(wo);
     float sini = SinTheta(wi), sino = SinTheta(wo);
@@ -254,6 +283,7 @@ Point BRDFRemap(const Vector &wo, const Vector &wi) {
     if (dphi > M_PI) dphi = 2.f * M_PI - dphi;
     return Point(sini * sino, dphi / M_PI, cosi * coso);
 }
+
 
 
 Spectrum IrregIsotropicBRDF::f(const Vector &wo,

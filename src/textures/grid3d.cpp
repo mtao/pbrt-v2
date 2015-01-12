@@ -33,18 +33,14 @@
 // textures/grid3d.cpp*
 #include "stdafx.h"
 #include "textures/grid3d.h"
+#include <iostream>
 
 // CheckerboardTexture Method Definitions
 Texture<float> *CreateGrid3DFloatTexture(const Transform &tex2world,
         const TextureParams &tp) {
-    int dim = tp.FindInt("dimension", 2);
 
     const ParamSet& gp = tp.GetGeomParams();
     const float default_value = tp.FindFloat("default",0);
-    if (dim != 2 && dim != 3) {
-        Error("%d dimensional checkerboard texture not supported", dim);
-        return NULL;
-    }
     int ndims;//has to be 3
     const int * dims = gp.FindInt("dims",&ndims);
     if(ndims != 3) {
@@ -55,9 +51,10 @@ Texture<float> *CreateGrid3DFloatTexture(const Transform &tex2world,
     ny = dims[1];
     nz = dims[2];
 
+
     int N;
     const float * data = gp.FindFloat("data",&N);
-    if( N == nx * ny * nz ) {
+    if( N != nx * ny * nz ) {
         Error("Dimensions and grid elements dont match");
     }
 

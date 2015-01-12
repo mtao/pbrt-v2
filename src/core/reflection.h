@@ -191,6 +191,7 @@ private:
 #define MAX_BxDFS 8
     BxDF *bxdfs[MAX_BxDFS];
     friend class MixMaterial;
+    friend class WetMaterial;
 };
 
 
@@ -476,6 +477,21 @@ private:
     MicrofacetDistribution *distribution;
 };
 
+class WetBxDF: public BxDF {
+public:
+    // WetBxDF Public Methods
+    WetBxDF(
+                 BxDF *base,
+            const float &wetness
+                 );
+    Spectrum f(const Vector &wo, const Vector &wi) const;
+    Spectrum Sample_f(const Vector &wi, Vector *sampled_f, float u1, float u2, float *pdf) const;
+    float Pdf(const Vector &wi, const Vector &wo) const;
+private:
+    // WetBxDF Private Data
+    float wetness;
+    BxDF *base;
+};
 
 class IrregIsotropicBRDF : public BxDF {
 public:

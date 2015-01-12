@@ -88,6 +88,7 @@
 #include "materials/shinymetal.h"
 #include "materials/translucent.h"
 #include "materials/uber.h"
+#include "materials/wet.h"
 #include "renderers/aggregatetest.h"
 #include "renderers/createprobes.h"
 #include "renderers/metropolis.h"
@@ -397,6 +398,17 @@ Reference<Material> MakeMaterial(const string &name,
         }
 
         material = CreateMixMaterial(mtl2world, mp, mat1, mat2);
+    }
+    else if (name == "wet") {
+        string m1 = mp.FindString("namedmaterial1", "");
+        Reference<Material> mat1 = graphicsState.namedMaterials[m1];
+        if (!mat1) {
+            Error("Named material \"%s\" undefined.  Using \"matte\"",
+                  m1.c_str());
+            mat1 = MakeMaterial("matte", curTransform[0], mp);
+        }
+
+        material = CreateWetMaterial(mtl2world, mp, mat1);
     }
     else if (name == "metal")
         material = CreateMetalMaterial(mtl2world, mp);
