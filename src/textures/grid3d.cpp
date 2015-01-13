@@ -38,6 +38,7 @@
 // CheckerboardTexture Method Definitions
 Texture<float> *CreateGrid3DFloatTexture(const Transform &tex2world,
         const TextureParams &tp) {
+    Warning("Creating a 3dgrid float texture");
 
     const ParamSet& gp = tp.GetGeomParams();
     const float default_value = tp.FindFloat("default",0);
