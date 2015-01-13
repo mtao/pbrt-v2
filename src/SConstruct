@@ -65,7 +65,7 @@ if has_openexr:
     env.Append(LIBPATH = exr_libdir)
     env.Append(CPPDEFINES = [ 'PBRT_HAS_OPENEXR' ])
     if arch != 'darwin':
-        exr_libs = [ 'Iex', 'IlmImf', 'Imath', 'Iex', 'IlmThread', 'Half' ] 
+        exr_libs = [ 'Iex', 'IlmImf', 'Imath', 'Iex', 'IlmThread', 'Half', 'pthread' ] 
     else:
         exr_libs = [ 'Iex', 'IlmImf', 'Imath', 'Iex', 'IlmThread', 'Half', 'z' ] 
 else:
