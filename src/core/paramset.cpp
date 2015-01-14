@@ -194,6 +194,7 @@ void ParamSet::AddString(const string &name, const string *data, int nItems) {
 }
 
 
+#include <iostream>
 void ParamSet::AddTexture(const string &name, const string &value) {
     EraseTexture(name);
     textures.push_back(new ParamSetItem<string>(name, (string *)&value, 1));

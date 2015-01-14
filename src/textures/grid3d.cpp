@@ -41,7 +41,7 @@ Texture<float> *CreateGrid3DFloatTexture(const Transform &tex2world,
     Warning("Creating a 3dgrid float texture");
 
     const ParamSet& gp = tp.GetGeomParams();
-    const float default_value = tp.FindFloat("default",0);
+    const float default_value = tp.FindFloat("default_value",0);
     int ndims;//has to be 3
     const int * dims = gp.FindInt("dims",&ndims);
     if(ndims != 3) {

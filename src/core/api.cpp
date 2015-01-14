@@ -937,6 +937,7 @@ void pbrtTexture(const string &name, const string &type,
     VERIFY_WORLD("Texture");
     TextureParams tp(params, params, graphicsState.floatTextures,
                      graphicsState.spectrumTextures);
+        Warning("Adding %s texture from pbrtTexture:%s", type.c_str(),name.c_str());
     if (type == "float")  {
         // Create _float_ texture and store in _floatTextures_
         if (graphicsState.floatTextures.find(name) !=

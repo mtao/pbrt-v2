@@ -44,6 +44,7 @@
 #include "shape.h"
 #include "parallel.h"
 #include "progressreporter.h"
+#include <cmath>
 
 
 
@@ -61,16 +62,25 @@ public:
         delete[] data;
     }
 
-    void barycentric(const Point& p, int ix, int iy, int iz, float dx, float dy, float dz) const {
+    void barycentric(const Point& p, int& ix, int& iy, int& iz, float& dx, float& dy, float& dz) const {
+        int nx = this->nx-1;
+        int ny = this->ny-1;
+        int nz = this->nz-1;
         dx = p.x * nx;
-        ix = int(dx);
+        ix = int(std::floor(dx));
         dx -=  ix;
         dy = p.y * ny;
-        iy = int(dy);
+        iy = int(std::floor(dy));
         dy -=  iy;
         dz = p.z * nz;
-        iz = int(dz);
+        iz = int(std::floor(dz));
         dz -=  iz;
+        ix += ix<0?nx:0;
+        iy += iy<0?ny:0;
+        iz += iz<0?nz:0;
+        ix %= nx;
+        iy %= ny;
+        iz %= nz;
     }
 
     const T& datagrid(int ix, int iy, int iz) const {
@@ -78,12 +88,19 @@ public:
     }
 
     T Evaluate(const DifferentialGeometry &dg) const {
-        return 0.1f;
         Vector dpdx, dpdy;
         Point p = mapping->Map(dg, &dpdx, &dpdy);
+        p = dg.p;
+        //Warning("%f %f %f",p.x,p.y,p.z);
+    if(p.x > 1 || p.x < 0 || p.y > 1 || p.y < 0 ||p.z > 1 || p.z < 0) {
+        //Warning("Using defualt");
+        return default_value;
+    }
     float dx,dy,dz;
     int ix,iy,iz;
     barycentric(p,ix,iy,iz,dx,dy,dz);
+    ix=iy=iz=0;
+
     const T& w000 = datagrid(ix,   iy,   iz);//,   dx,   dy,   dz);
     const T& w100 = datagrid(ix+1, iy,   iz);//,   dx-1, dy,   dz);
     const T& w010 = datagrid(ix,   iy+1, iz);//,   dx,   dy-1, dz);
@@ -100,7 +117,8 @@ public:
     T x11 = LerpT(dx, w011, w111);
     T y0 = LerpT(dy, x00, x10);
     T y1 = LerpT(dy, x01, x11);
-    return LerpT(dz, y0, y1);
+    T ret = LerpT(dz, y0, y1);
+    return ret;
 
     }
     
