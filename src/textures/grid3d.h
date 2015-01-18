@@ -75,12 +75,6 @@ public:
         dz = p.z * nz;
         iz = int(std::floor(dz));
         dz -=  iz;
-        ix += ix<0?nx:0;
-        iy += iy<0?ny:0;
-        iz += iz<0?nz:0;
-        ix %= nx;
-        iy %= ny;
-        iz %= nz;
     }
 
     const T& datagrid(int ix, int iy, int iz) const {
@@ -90,7 +84,6 @@ public:
     T Evaluate(const DifferentialGeometry &dg) const {
         Vector dpdx, dpdy;
         Point p = mapping->Map(dg, &dpdx, &dpdy);
-        p = dg.p;
         //Warning("%f %f %f",p.x,p.y,p.z);
     if(p.x > 1 || p.x < 0 || p.y > 1 || p.y < 0 ||p.z > 1 || p.z < 0) {
         //Warning("Using defualt");
@@ -99,7 +92,6 @@ public:
     float dx,dy,dz;
     int ix,iy,iz;
     barycentric(p,ix,iy,iz,dx,dy,dz);
-    ix=iy=iz=0;
 
     const T& w000 = datagrid(ix,   iy,   iz);//,   dx,   dy,   dz);
     const T& w100 = datagrid(ix+1, iy,   iz);//,   dx-1, dy,   dz);

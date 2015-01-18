@@ -93,6 +93,6 @@ Texture<Spectrum> *CreateGrid3DSpectrumTexture(const Transform &tex2world,
 
 
     // Initialize 3D texture mapping _map_ from _tp_
-    TextureMapping3D *map = new IdentityMapping3D(tex2world);
+    TextureMapping3D *map = new IdentityMapping3D(Inverse(tex2world));
     return new Grid3DTexture<Spectrum>(map, nx,ny,nz,data,default_value);
 }

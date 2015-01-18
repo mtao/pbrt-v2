@@ -250,6 +250,7 @@ WetBxDF::WetBxDF(BxDF* base,const float& wetness )
 }
 
 float _wetness_attenuation(float density) {
+    return Clamp(.2f + .8f* (1-density),0.f,1.f);
     return std::exp(-4.f*density);
 }
 
